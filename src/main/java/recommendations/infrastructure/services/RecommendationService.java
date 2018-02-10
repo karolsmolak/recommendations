@@ -1,5 +1,6 @@
 package recommendations.infrastructure.services;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -9,6 +10,7 @@ import recommendations.core.domain.User;
 import recommendations.core.repositories.IUserRepository;
 import recommendations.infrastructure.dto.MovieDto;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -32,6 +34,9 @@ public class RecommendationService implements IRecommendationService {
     @Autowired
     IMovieService _movieService;
 
+    @Autowired
+    private ModelMapper _modelMapper;
+
     @Override
     public void recalculateRecommendations() {
 
@@ -41,7 +46,7 @@ public class RecommendationService implements IRecommendationService {
             for (int feature = 0 ; feature < numberOfFeatures ; feature++){
                 for (User user : users) {
                     for (Rating rating : user.getUserRatings()) {
-                        train(user, rating.getMovie(), rating.getRating());
+                        train(user, rating.getMovie(), rating.getRating(), feature);
                     }
                 }
             }
@@ -49,12 +54,12 @@ public class RecommendationService implements IRecommendationService {
 
     }
 
-    private double train(User user, Movie movie, double rating, int feature) {
+    private void train(User user, Movie movie, double rating, int feature) {
         double error = lrate * (rating - predictRating(user, movie));
 
         double userFeature = user.getFeature(feature);
-        user.setFeature(user.getFeature(feature) + error * movie.getFeature(feature));
-        movie.setFeature(movie.getFeature(feature) + error * userFeature);
+        user.setFeature(feature ,user.getFeature(feature) + error * movie.getFeature(feature));
+        movie.setFeature(feature, movie.getFeature(feature) + error * userFeature);
     }
 
     private double predictRating(User user, Movie movie) {
@@ -70,13 +75,13 @@ public class RecommendationService implements IRecommendationService {
     @Override
     public List<MovieDto> getUserRecommendations(String username) {
 
-        User user = _userService.getByUsernameDetails(username);
-        List<Movie> movies = _userService.getUnseenMovies(user);
+        User user = _userService.getByUsernameDetailes(username);
+        List<Movie> movies = _movieService.getAllDetails();
 
-        List<Rating> topTen;
+        List<Rating> topTen = new ArrayList<>();
 
         for (Movie movie : movies) {
-            int predictedRating = predictRating(user, movie);
+            int predictedRating = (int) predictRating(user, movie);
 
             int higherRanked = 0;
             for (Rating rating : topTen) {
@@ -91,7 +96,13 @@ public class RecommendationService implements IRecommendationService {
 
         }
 
+        List<MovieDto> result = new LinkedList<>();
 
+        for (Rating rating : topTen) {
+            result.add(_modelMapper.map(rating.getMovie(), MovieDto.class));
+        }
+
+        return result;
 
     }
 }

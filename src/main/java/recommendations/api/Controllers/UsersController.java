@@ -56,6 +56,6 @@ public class UsersController {
 
     @RequestMapping(value = "/{username}", method = RequestMethod.POST)
     public ResponseEntity<?> rate(UpdateRating updateRating) {
-
+        return null;
     }
 }

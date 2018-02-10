@@ -15,7 +15,7 @@ import java.util.List;
 @Repository
 public class InMemoryMovieRepository implements IMovieRepository {
 
-    List<Movie> movieList = new LinkedList<>();
+    List<Movie> movieList = new ArrayList<>();
 
     @Override
     public void add(Movie movie) {
@@ -33,7 +33,7 @@ public class InMemoryMovieRepository implements IMovieRepository {
     }
 
     @Override
-    public Movie findById(Integer id) {
+    public Movie findById(Long id) {
         for (Movie movie : movieList) {
             if (movie.getId().equals(id)) {
                 return movie;

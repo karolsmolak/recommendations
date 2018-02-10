@@ -12,4 +12,5 @@ public interface IUserService {
     void register(String email, String username, String password) throws UserAlreadyExistsException;
     UserDto getByUsername(String username);
     List<User> getAllWithRatings();
+    User getByUsernameDetailes(String username);
 }

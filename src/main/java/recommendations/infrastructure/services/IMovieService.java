@@ -6,6 +6,6 @@ import recommendations.infrastructure.dto.MovieDto;
 import java.util.List;
 
 public interface IMovieService {
-    MovieDto get(Integer id);
+    MovieDto get(Long id);
     List<Movie> getAllDetails();
 }

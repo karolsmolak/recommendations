@@ -26,6 +26,7 @@ public class Application {
 
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
+
     }
 
     @Bean
@@ -57,10 +58,13 @@ public class Application {
     }
 
     @Bean
-    public IUserRepository userRepository() throws Exception {
-        IUserRepository bean = new InMemoryUserRepository();
-        new UserPopulator(bean).populate();
-        return bean;
+    public IUserRepository userRepository(IMovieRepository movieRepository) throws Exception {
+        IUserRepository userRepository = new InMemoryUserRepository();
+
+        if(movieRepository == null) System.out.println("DDS");
+        new UserPopulator(userRepository, movieRepository).populate();
+
+        return userRepository;
     }
 
 

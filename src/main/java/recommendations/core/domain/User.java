@@ -2,6 +2,8 @@ package recommendations.core.domain;
 
 import org.springframework.beans.factory.annotation.Value;
 
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import javax.validation.constraints.NotNull;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
@@ -15,7 +17,7 @@ public class User {
     private String email;
     private String username;
     private String password;
-    private double[] features;
+    private List<Double> features;
 
     private List<Rating> userRatings = new LinkedList<>();
 
@@ -26,14 +28,14 @@ public class User {
 
         this.numberOfFeatures = numberOfFeatures;
 
-        features = new double[numberOfFeatures];
+        features = new ArrayList<>();
         for (int i = 0 ; i < numberOfFeatures ; i++) {
-            features[i] = ThreadLocalRandom.current().nextDouble(0, 1);
+            features.add(ThreadLocalRandom.current().nextDouble(0, 1));
         }
     }
 
-    public void updateRating(Integer movieId, Integer rating) {
-        userRatings.add(new Rating(movieId, rating));
+    public void updateRating(Movie movie, Integer rating) {
+        userRatings.add(new Rating(movie, rating));
     }
 
     public String getEmail() {
@@ -57,6 +59,23 @@ public class User {
     }
 
     public Double getFeature(int i){
-        return features[i];
+        return features.get(i);
+    }
+
+    public void setFeature(int index, double value) {
+        this.features.set(index, value);
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "numberOfFeatures=" + numberOfFeatures +
+                ", id=" + id +
+                ", email='" + email + '\'' +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", features=" + features +
+                ", userRatings=" + userRatings +
+                '}';
     }
 }

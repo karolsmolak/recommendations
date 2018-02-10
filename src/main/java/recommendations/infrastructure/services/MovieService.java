@@ -23,7 +23,7 @@ public class MovieService implements IMovieService {
     }
 
     @Override
-    public MovieDto get(Integer id) {
+    public MovieDto get(Long id) {
         Movie movie = _movieRepository.findById(id);
 
         if(movie == null){

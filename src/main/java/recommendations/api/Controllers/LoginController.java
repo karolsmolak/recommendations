@@ -13,15 +13,15 @@ import recommendations.infrastructure.services.IUserService;
 @RequestMapping("/login")
 public class LoginController {
 
-    private IUserService _userService;
-
-    @Autowired
-    public LoginController(IUserService userService){
-        _userService = userService;
-    }
-
-    @PostMapping
-    public void post(@RequestBody Login login) {
-    }
+//    private IUserService _userService;
+//
+//    @Autowired
+//    public LoginController(IUserService userService){
+//        _userService = userService;
+//    }
+//
+//    @PostMapping
+//    public void post(@RequestBody Login login) {
+//    }
 
 }

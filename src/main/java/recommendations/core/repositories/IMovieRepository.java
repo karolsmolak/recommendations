@@ -12,7 +12,7 @@ public interface IMovieRepository {
     void update(User user);
     void remove(Integer id);
 
-    Movie findById(Integer id);
+    Movie findById(Long id);
     List<Movie> findAll();
     Movie findByEmail(String email);
 

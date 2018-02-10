@@ -1,20 +1,33 @@
 package recommendations.core.domain;
 
-public class Rating {
-    Integer movieId;
-    Integer rating;
+import javax.persistence.*;
 
-    public Rating(Integer movieId, Integer rating) {
-        this.movieId = movieId;
+@Entity
+public class Rating {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "movieId")
+    private Movie movie;
+    private Integer rating;
+
+    public Rating() {
+    }
+
+    public Rating(Movie movie, Integer rating) {
+        this.movie = movie;
         this.rating = rating;
     }
 
-    public Integer getMovieId() {
-        return movieId;
+    public Movie getMovie() {
+        return movie;
     }
 
-    public void setMovieId(Integer movieId) {
-        this.movieId = movieId;
+    public void setMovie(Movie movie) {
+        this.movie = movie;
     }
 
     public Integer getRating() {

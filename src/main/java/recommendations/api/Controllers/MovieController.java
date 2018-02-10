@@ -18,7 +18,7 @@ public class MovieController {
     IMovieService _movieService;
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public MovieDto get(@PathVariable Integer id){
+    public MovieDto get(@PathVariable Long id){
         MovieDto result = null;
         result = _movieService.get(id);
 

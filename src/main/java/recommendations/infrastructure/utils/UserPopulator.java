@@ -5,7 +5,9 @@ import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import recommendations.core.domain.Movie;
 import recommendations.core.domain.User;
+import recommendations.core.repositories.IMovieRepository;
 import recommendations.core.repositories.IUserRepository;
 
 import java.io.FileReader;
@@ -13,10 +15,14 @@ import java.io.FileReader;
 @Component
 public class UserPopulator {
 
-    IUserRepository _userRepository;
+    private IUserRepository _userRepository;
 
-    public UserPopulator(IUserRepository userRepository) {
+    private IMovieRepository _movieRepository;
+
+    @Autowired
+    public UserPopulator(IUserRepository userRepository, IMovieRepository movieRepository) {
         _userRepository = userRepository;
+        _movieRepository = movieRepository;
     }
 
     public void populate() throws Exception {
@@ -24,15 +30,21 @@ public class UserPopulator {
 
         User currentUser = null;
         for (CSVRecord record : parser) {
-            if (currentUser != null && Integer.parseInt(record.get("userId")) != currentUser.getId()) {
-                _userRepository.add(currentUser);
+
+            Movie movie = _movieRepository.findById(Long.parseLong(record.get("movieId")));
+
+            if (currentUser != null) {
+                if(!currentUser.getUsername().equals(record.get("userId"))) {
+                    _userRepository.add(currentUser);
+                    currentUser = null;
+                }
             }
 
             if (currentUser == null) {
-                currentUser = new User("", "", "", 40);
+                currentUser = new User("user" + record.get("userId") + "@mail", record.get("userId"), "user" + record.get("userId"), 40);
             }
 
-            currentUser.updateRating(Integer.parseInt(record.get("movieId")),
+            currentUser.updateRating(movie,
                     (int)Math.round(Double.parseDouble(record.get("rating")) * 2));
         }
 

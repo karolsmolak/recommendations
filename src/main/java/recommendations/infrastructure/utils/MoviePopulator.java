@@ -22,7 +22,7 @@ public class MoviePopulator {
         CSVParser parser = new CSVParser(new FileReader("src/main/resources/movies.csv"), CSVFormat.EXCEL.withHeader());
 
         for (CSVRecord record : parser) {
-            _movieRepository.add(new Movie(Integer.parseInt(record.get("movieId")), record.get("title"), record.get("genres"), 40));
+            _movieRepository.add(new Movie(Long.parseLong(record.get("movieId")), record.get("title"), record.get("genres"), 40));
         }
 
         parser.close();

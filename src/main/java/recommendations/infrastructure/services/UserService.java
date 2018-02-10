@@ -40,6 +40,10 @@ public class UserService implements IUserService {
         return mappedUser;
     }
 
+    public User getByUsernameDetailes(String username) {
+        return _userRepository.findByUsername(username);
+    }
+
     @Override
     public void register(String email, String username, String password) throws UserAlreadyExistsException {
         User user = _userRepository.findByEmail(email);

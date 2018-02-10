@@ -1,25 +1,21 @@
 package recommendations.infrastructure.dto;
 
+import recommendations.core.domain.Rating;
+
+import java.util.List;
+
 public class UserDto {
 
-    private Integer id;
     private String email;
     private String username;
+    private List<Rating> userRatings;
 
     public UserDto(){}
 
-    public UserDto(Integer id, String email, String username) {
-        this.id = id;
+    public UserDto(String email, String username, List<Rating> userRatings) {
         this.email = email;
         this.username = username;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
+        this.userRatings = userRatings;
     }
 
     public String getEmail() {
@@ -38,4 +34,11 @@ public class UserDto {
         this.username = username;
     }
 
+    public List<Rating> getUserRatings() {
+        return userRatings;
+    }
+
+    public void setUserRatings(List<Rating> userRatings) {
+        this.userRatings = userRatings;
+    }
 }

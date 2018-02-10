@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 import recommendations.infrastructure.utils.UserPopulator;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Repository
 public class InMemoryUserRepository implements IUserRepository {
@@ -44,6 +45,14 @@ public class InMemoryUserRepository implements IUserRepository {
             }
         }
         return null;
+    }
+
+    @Override
+    public User findByUsername(String username) {
+        return users.stream()
+                .filter(user -> user.getUsername().equals(username))
+                .collect(Collectors.toList())
+                .get(0);
     }
 
     @Override
