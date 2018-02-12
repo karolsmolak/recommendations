@@ -7,11 +7,12 @@ public class Rating {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "movieId")
     private Movie movie;
+
     private Integer rating;
 
     public Rating() {

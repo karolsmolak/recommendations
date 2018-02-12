@@ -1,21 +1,20 @@
 package recommendations.infrastructure.repositories;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import recommendations.core.domain.Movie;
-import recommendations.core.domain.User;
 import recommendations.core.repositories.IMovieRepository;
-import recommendations.infrastructure.utils.MoviePopulator;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
 @Repository
 public class InMemoryMovieRepository implements IMovieRepository {
 
-    List<Movie> movieList = new ArrayList<>();
+    List<Movie> movieList = new LinkedList<>();
+
+    public InMemoryMovieRepository() {
+        add(new Movie(1, "movie1", "Comedy", 40));
+    }
 
     @Override
     public void add(Movie movie) {
@@ -23,17 +22,7 @@ public class InMemoryMovieRepository implements IMovieRepository {
     }
 
     @Override
-    public void update(User user) {
-
-    }
-
-    @Override
-    public void remove(Integer id) {
-
-    }
-
-    @Override
-    public Movie findById(Long id) {
+    public Movie findById(Integer id) {
         for (Movie movie : movieList) {
             if (movie.getId().equals(id)) {
                 return movie;
@@ -48,7 +37,7 @@ public class InMemoryMovieRepository implements IMovieRepository {
     }
 
     @Override
-    public Movie findByEmail(String email) {
-        return null;
+    public void addMany(List<Movie> movies) {
+
     }
 }

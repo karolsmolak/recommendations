@@ -1,48 +1,44 @@
 package recommendations.core.domain;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
+import javax.persistence.*;
 import java.util.concurrent.ThreadLocalRandom;
-
 
 @Entity
 public class Movie {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+
     private int numberOfFeatures;
 
-    @Id
-    private Long id;
     private String title;
     private String genre;
 
-    private List<Double> features;
+    @Column(length = 20923)
+    private double[] features;
 
     public Movie() {
     }
 
-    public Movie(Long id, String title, String genre, int numberOfFeatures) {
+    public Movie(Integer id, String title, String genre, int numberOfFeatures) {
         this.id = id;
         this.title = title;
         this.genre = genre;
         this.numberOfFeatures = numberOfFeatures;
 
-        features = new ArrayList<>();
+        features = new double[numberOfFeatures];
         for (int i = 0 ; i < numberOfFeatures ; i++) {
-            features.add(ThreadLocalRandom.current().nextDouble(0, 1));
+            features[i] =  (ThreadLocalRandom.current().nextDouble(0, 1));
         }
     }
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
     public void setFeature(int i, double val) {
-        features.set(i, val);
+        features[i] = val;
     }
 
     public String getTitle() {
@@ -54,7 +50,10 @@ public class Movie {
     }
 
     public Double getFeature(int i){
-        return features.get(i);
+        return features[i];
     }
 
+    public void setNumberOfFeatures(int numberOfFeatures) {
+        this.numberOfFeatures = numberOfFeatures;
+    }
 }

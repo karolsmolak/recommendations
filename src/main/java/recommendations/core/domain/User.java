@@ -1,36 +1,53 @@
 package recommendations.core.domain;
 
-import org.springframework.beans.factory.annotation.Value;
-
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.validation.constraints.NotNull;
+import javax.persistence.*;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
+@Entity
 public class User {
 
-    private int numberOfFeatures;
-
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    private int numberOfFeatures;
     private String email;
     private String username;
     private String password;
-    private List<Double> features;
+    private String salt;
 
+    @Column(length = 20923)
+    private double[] features;
+
+    @OneToMany(cascade = CascadeType.ALL)
     private List<Rating> userRatings = new LinkedList<>();
 
-    public User(String email, String username, String password, int numberOfFeatures) {
+    public User(Integer id, String email, String username, String password, String salt, int numberOfFeatures) {
+        this.salt = salt;
         this.email = email;
         this.username = username;
         this.password = password;
-
+        this.id = id;
         this.numberOfFeatures = numberOfFeatures;
 
-        features = new ArrayList<>();
+        features = new double[numberOfFeatures];
         for (int i = 0 ; i < numberOfFeatures ; i++) {
-            features.add(ThreadLocalRandom.current().nextDouble(0, 1));
+            features[i] = (ThreadLocalRandom.current().nextDouble(0, 1));
+        }
+    }
+
+
+    public User(String email, String username, String password, String salt, int numberOfFeatures) {
+        this.salt = salt;
+        this.email = email;
+        this.username = username;
+        this.password = password;
+        this.numberOfFeatures = numberOfFeatures;
+
+        features = new double[numberOfFeatures];
+        for (int i = 0 ; i < numberOfFeatures ; i++) {
+            features[i] = (ThreadLocalRandom.current().nextDouble(0, 1));
         }
     }
 
@@ -59,23 +76,14 @@ public class User {
     }
 
     public Double getFeature(int i){
-        return features.get(i);
+        return features[i];
     }
 
     public void setFeature(int index, double value) {
-        this.features.set(index, value);
+        this.features[index] = value;
     }
 
-    @Override
-    public String toString() {
-        return "User{" +
-                "numberOfFeatures=" + numberOfFeatures +
-                ", id=" + id +
-                ", email='" + email + '\'' +
-                ", username='" + username + '\'' +
-                ", password='" + password + '\'' +
-                ", features=" + features +
-                ", userRatings=" + userRatings +
-                '}';
+    public String getSalt() {
+        return salt;
     }
 }

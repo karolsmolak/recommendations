@@ -1,7 +1,5 @@
 package recommendations.infrastructure.dto;
 
-import java.util.List;
-
 public class MovieDto {
     private Integer id;
     private String title;

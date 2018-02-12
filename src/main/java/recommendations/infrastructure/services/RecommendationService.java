@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 import recommendations.core.domain.Movie;
 import recommendations.core.domain.Rating;
 import recommendations.core.domain.User;
-import recommendations.core.repositories.IUserRepository;
 import recommendations.infrastructure.dto.MovieDto;
 
 import java.util.ArrayList;
@@ -75,7 +74,7 @@ public class RecommendationService implements IRecommendationService {
     @Override
     public List<MovieDto> getUserRecommendations(String username) {
 
-        User user = _userService.getByUsernameDetailes(username);
+        User user = _userService.getByUsernameDetails(username);
         List<Movie> movies = _movieService.getAllDetails();
 
         List<Rating> topTen = new ArrayList<>();
@@ -91,9 +90,12 @@ public class RecommendationService implements IRecommendationService {
             }
 
             if (higherRanked != 10) {
-                topTen.add(new Rating(movie, predictedRating));
+                topTen.add(higherRanked, new Rating(movie, predictedRating));
             }
 
+            if (topTen.size() > 10) {
+                topTen.remove(10);
+            }
         }
 
         List<MovieDto> result = new LinkedList<>();

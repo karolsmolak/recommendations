@@ -7,7 +7,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import recommendations.infrastructure.command.CreateUser;
 import recommendations.infrastructure.command.UpdateRating;
 import recommendations.infrastructure.dto.UserDto;
-import recommendations.infrastructure.exceptions.UserAlreadyExistsException;
 import recommendations.infrastructure.exceptions.UserNotFoundException;
 import recommendations.infrastructure.services.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,8 +28,7 @@ public class UsersController {
 
     @RequestMapping(value = "/{username}", method = RequestMethod.GET)
     public UserDto get(@PathVariable String username){
-        UserDto result = null;
-        result = _userService.getByUsername(username);
+        UserDto result = _userService.getByUsername(username);
 
         if(result == null){
             throw new UserNotFoundException(username);
@@ -40,7 +38,7 @@ public class UsersController {
     }
 
     @PostMapping
-    public ResponseEntity<?> post(@Valid CreateUser createUser, BindingResult bindingResult) throws UserAlreadyExistsException, ValidationException {
+    public ResponseEntity<?> post(@Valid @RequestBody CreateUser createUser, BindingResult bindingResult) throws Exception {
         if (bindingResult.hasErrors()) {
            throw new ValidationException();
         }
@@ -55,7 +53,7 @@ public class UsersController {
     }
 
     @RequestMapping(value = "/{username}", method = RequestMethod.POST)
-    public ResponseEntity<?> rate(UpdateRating updateRating) {
+    public ResponseEntity<?> rate(@PathVariable String username, UpdateRating updateRating) {
         return null;
     }
 }

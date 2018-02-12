@@ -3,20 +3,19 @@ package recommendations.infrastructure.command;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotBlank;
 
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 public class CreateUser implements ICommand {
 
     @NotBlank
     @Email
-    String email;
+    private String email;
 
     @Size(min = 3, max = 20)
-    String username;
+    private String username;
 
-    @Size(min = 6, max = 20)
-    String password;
+    @Size(min = 5, max = 20)
+    private String password;
 
     public CreateUser() {
 

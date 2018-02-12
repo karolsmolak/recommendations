@@ -1,5 +1,6 @@
 package unit;
 
+import config.TestConfig;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Matchers;
@@ -8,20 +9,19 @@ import org.mockito.Mockito;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Import;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
-import recommendations.api.Application;
 import recommendations.core.repositories.IUserRepository;
-import recommendations.infrastructure.dto.UserDto;
+import recommendations.infrastructure.encrypter.IEncrypter;
 import recommendations.infrastructure.services.IUserService;
 import recommendations.infrastructure.services.UserService;
 
 import static junit.framework.TestCase.fail;
-
+import static org.junit.Assert.assertNotNull;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = Application.class)
+@SpringBootTest(classes = TestConfig.class)
+@ActiveProfiles("test")
 public class UserServiceTest {
 
     IUserService userService;
@@ -35,9 +35,12 @@ public class UserServiceTest {
     @Autowired
     IUserRepository userRepository;
 
+    @Autowired
+    IEncrypter _encrypter;
+
     @Test
     public void registeringUserShouldInvokeAddOnRepository(){
-        userService = new UserService(mockRepository, modelMapper);
+        userService = new UserService(mockRepository, modelMapper, _encrypter);
 
         try{
             userService.register("user@mail", "username", "secret");
@@ -49,12 +52,13 @@ public class UserServiceTest {
     }
 
     @Test
-    public void registeringExistingUserShouldThrowException(){
-        userService = new UserService(userRepository, modelMapper);
+    public void registeringExistingUserShouldThrowException() {
+        userService = new UserService(userRepository, modelMapper, _encrypter);
 
         try{
-            userService.register("user1@mail", "username", "secret");
+            userService.register("user1@mail.com", "user1", "secret");
         } catch (Exception e) {
+            e.printStackTrace();
             Mockito.verify(mockRepository, Mockito.never()).add(Matchers.anyObject());
             return;
         }
@@ -64,8 +68,8 @@ public class UserServiceTest {
 
     @Test
     public void getOnExistingUserShouldNotBeNull(){
-        userService = new UserService(userRepository, modelMapper);
+        userService = new UserService(userRepository, modelMapper, _encrypter);
 
-        //userService.getById(1);
+        assertNotNull(userService.getByUsername("user1"));
     }
 }

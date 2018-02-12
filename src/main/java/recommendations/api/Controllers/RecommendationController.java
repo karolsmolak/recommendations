@@ -2,10 +2,10 @@ package recommendations.api.Controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import recommendations.core.domain.Movie;
 import recommendations.infrastructure.dto.MovieDto;
 import recommendations.infrastructure.services.IRecommendationService;
 
@@ -18,6 +18,7 @@ public class RecommendationController {
     @Autowired
     private IRecommendationService _recommendationService;
 
+    @GetMapping(value = "/{username}")
     public List<MovieDto> get(@PathVariable String username){
         return _recommendationService.getUserRecommendations(username);
     }

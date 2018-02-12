@@ -2,7 +2,6 @@ package recommendations.core.repositories;
 
 import recommendations.core.domain.User;
 
-import java.util.Collection;
 import java.util.List;
 
 public interface IUserRepository {
@@ -16,4 +15,5 @@ public interface IUserRepository {
     List<User> findAll();
     User findByEmail(String email);
 
+    void addMany(List<User> bufor);
 }

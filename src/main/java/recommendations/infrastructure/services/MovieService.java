@@ -23,15 +23,14 @@ public class MovieService implements IMovieService {
     }
 
     @Override
-    public MovieDto get(Long id) {
+    public MovieDto get(Integer id) {
         Movie movie = _movieRepository.findById(id);
 
         if(movie == null){
             return null;
         }
 
-        MovieDto mappedMovie = _modelMapper.map(movie, MovieDto.class);
-        return mappedMovie;
+        return _modelMapper.map(movie, MovieDto.class);
 
     }
 

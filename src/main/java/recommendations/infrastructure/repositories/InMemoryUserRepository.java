@@ -1,24 +1,25 @@
 package recommendations.infrastructure.repositories;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 import recommendations.core.domain.User;
 import recommendations.core.repositories.IUserRepository;
-import org.springframework.stereotype.Repository;
-import recommendations.infrastructure.utils.UserPopulator;
+import recommendations.infrastructure.encrypter.Encrypter;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.LinkedList;
+import java.util.List;
 
 @Repository
 public class InMemoryUserRepository implements IUserRepository {
 
-    private static List<User> users = new LinkedList<>();
+    private List<User> users;
 
     public InMemoryUserRepository() {
-        add(new User("user1@mail", "user1", "secret", 40));
-        add(new User("user2@mail.com", "user2", "secret",40));
-        add(new User("user3@mail.com", "user3", "secret",  40));
-        add(new User("user4@mail.com", "user3", "secret",  40));
+        users = new LinkedList<>();
+        try {
+            add(new User("user1@mail.com", "user1", new Encrypter().GetHash("user1", "salt"), "salt", 40));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -39,7 +40,7 @@ public class InMemoryUserRepository implements IUserRepository {
 
     @Override
     public User findById(Integer id) {
-        for(User user : users){
+        for (User user : users) {
             if(user.getId().equals(id)){
                 return user;
             }
@@ -49,10 +50,12 @@ public class InMemoryUserRepository implements IUserRepository {
 
     @Override
     public User findByUsername(String username) {
-        return users.stream()
-                .filter(user -> user.getUsername().equals(username))
-                .collect(Collectors.toList())
-                .get(0);
+        for (User user : users) {
+            if (user.getUsername().equals(username)) {
+                return user;
+            }
+        }
+        return null;
     }
 
     @Override
@@ -68,5 +71,10 @@ public class InMemoryUserRepository implements IUserRepository {
             }
         }
         return null;
+    }
+
+    @Override
+    public void addMany(List<User> bufor) {
+
     }
 }
