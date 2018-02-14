@@ -1,59 +1,50 @@
 package recommendations.api.Controllers;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import recommendations.infrastructure.command.CreateUser;
-import recommendations.infrastructure.command.UpdateRating;
+import recommendations.infrastructure.cqrs.commands.CreateUser;
+import recommendations.infrastructure.cqrs.ICommandDispatcher;
+import recommendations.infrastructure.cqrs.commands.UpdateRating;
 import recommendations.infrastructure.dto.UserDto;
-import recommendations.infrastructure.exceptions.UserNotFoundException;
 import recommendations.infrastructure.services.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.validation.Valid;
-import javax.validation.ValidationException;
-import java.net.URI;
 
 @RestController
 @RequestMapping("/users")
 public class UsersController {
 
-    private IUserService _userService;
+    @Autowired
+    private ICommandDispatcher _commandDispatcher;
 
     @Autowired
-    public UsersController(IUserService userService){
-        _userService = userService;
-    }
+    private IUserService _userService;
 
     @RequestMapping(value = "/{username}", method = RequestMethod.GET)
-    public UserDto get(@PathVariable String username){
+    public ResponseEntity<UserDto> get(@PathVariable String username){
         UserDto result = _userService.getByUsername(username);
 
         if(result == null){
-            throw new UserNotFoundException(username);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
 
-        return result;
+        return ResponseEntity.ok().body(result);
     }
 
     @PostMapping
     public ResponseEntity<?> post(@Valid @RequestBody CreateUser createUser, BindingResult bindingResult) throws Exception {
         if (bindingResult.hasErrors()) {
-           throw new ValidationException();
+           return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
 
-        _userService.register(createUser.getEmail(), createUser.getUsername(), createUser.getPassword());
-
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest().path("/")
-                .buildAndExpand(createUser.getUsername()).toUri();
-
-        return ResponseEntity.created(location).build();
+        return _commandDispatcher.dispatch(createUser);
     }
 
-    @RequestMapping(value = "/{username}", method = RequestMethod.POST)
+    @RequestMapping(value = "/rate", method = RequestMethod.POST)
     public ResponseEntity<?> rate(@PathVariable String username, UpdateRating updateRating) {
-        return null;
+        return ResponseEntity.ok().body(null);
     }
 }

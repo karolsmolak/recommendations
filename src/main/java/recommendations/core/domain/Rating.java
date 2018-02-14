@@ -27,15 +27,7 @@ public class Rating {
         return movie;
     }
 
-    public void setMovie(Movie movie) {
-        this.movie = movie;
-    }
-
     public Integer getRating() {
         return rating;
-    }
-
-    public void setRating(Integer rating) {
-        this.rating = rating;
     }
 }

@@ -72,4 +72,5 @@ public class UserServiceTest {
 
         assertNotNull(userService.getByUsername("user1"));
     }
+
 }

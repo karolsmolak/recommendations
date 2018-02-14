@@ -3,7 +3,7 @@ package integration;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import recommendations.api.Controllers.LoginController;
-import recommendations.infrastructure.command.Login;
+import recommendations.infrastructure.cqrs.commands.Login;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;

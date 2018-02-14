@@ -59,7 +59,7 @@ public class UserRepository implements IUserRepository{
     public User findByUsername(String username) {
         Session session = sessionFactory.getCurrentSession();
         Transaction transaction = session.beginTransaction();
-        User user = (User)session.createQuery("from user where username = :username").setParameter("username", username).uniqueResult();
+        User user = (User)session.createQuery("from User where username = :username").setParameter("username", username).uniqueResult();
         transaction.commit();
         return user;
     }

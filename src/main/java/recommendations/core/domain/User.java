@@ -11,7 +11,6 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    private int numberOfFeatures;
     private String email;
     private String username;
     private String password;
@@ -20,8 +19,10 @@ public class User {
     @Column(length = 20923)
     private double[] features;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Rating> userRatings = new LinkedList<>();
+
+    public User() {}
 
     public User(Integer id, String email, String username, String password, String salt, int numberOfFeatures) {
         this.salt = salt;
@@ -29,7 +30,6 @@ public class User {
         this.username = username;
         this.password = password;
         this.id = id;
-        this.numberOfFeatures = numberOfFeatures;
 
         features = new double[numberOfFeatures];
         for (int i = 0 ; i < numberOfFeatures ; i++) {
@@ -43,7 +43,6 @@ public class User {
         this.email = email;
         this.username = username;
         this.password = password;
-        this.numberOfFeatures = numberOfFeatures;
 
         features = new double[numberOfFeatures];
         for (int i = 0 ; i < numberOfFeatures ; i++) {

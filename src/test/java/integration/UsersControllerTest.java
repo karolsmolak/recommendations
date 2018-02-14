@@ -3,7 +3,7 @@ package integration;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import recommendations.api.Controllers.UsersController;
-import recommendations.infrastructure.command.CreateUser;
+import recommendations.infrastructure.cqrs.commands.CreateUser;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;

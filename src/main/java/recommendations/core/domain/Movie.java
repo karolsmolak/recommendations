@@ -10,8 +10,6 @@ public class Movie {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    private int numberOfFeatures;
-
     private String title;
     private String genre;
 
@@ -25,7 +23,6 @@ public class Movie {
         this.id = id;
         this.title = title;
         this.genre = genre;
-        this.numberOfFeatures = numberOfFeatures;
 
         features = new double[numberOfFeatures];
         for (int i = 0 ; i < numberOfFeatures ; i++) {
@@ -51,9 +48,5 @@ public class Movie {
 
     public Double getFeature(int i){
         return features[i];
-    }
-
-    public void setNumberOfFeatures(int numberOfFeatures) {
-        this.numberOfFeatures = numberOfFeatures;
     }
 }

@@ -51,6 +51,10 @@ public class RecommendationService implements IRecommendationService {
             }
         }
 
+        for (User user : users) {
+
+        }
+
     }
 
     private void train(User user, Movie movie, double rating, int feature) {
