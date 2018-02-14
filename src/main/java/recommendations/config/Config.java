@@ -11,10 +11,12 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 import recommendations.api.Application;
 
 @SpringBootConfiguration
 @EntityScan("recommendations.core.domain")
+@EnableTransactionManagement
 @Profile("dev")
 public class Config {
 

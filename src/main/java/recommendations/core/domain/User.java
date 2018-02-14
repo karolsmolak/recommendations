@@ -1,5 +1,7 @@
 package recommendations.core.domain;
 
+import org.hibernate.annotations.GenericGenerator;
+
 import javax.persistence.*;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
@@ -8,7 +10,9 @@ import java.util.concurrent.ThreadLocalRandom;
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(generator="myGenerator")
+    @GenericGenerator(name="myGenerator", strategy="recommendations.config.FilterIdentifierGenerator")
+    @Column(unique=true, nullable=false)
     private Integer id;
 
     private String email;

@@ -6,46 +6,40 @@ import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import recommendations.core.domain.Movie;
 import recommendations.core.repositories.IMovieRepository;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.util.List;
 
 @Repository
 @Primary
+@Transactional
 public class MovieRepository implements IMovieRepository {
-    @Autowired
-    private SessionFactory sessionFactory;
+    @PersistenceContext
+    private EntityManager entityManager;
 
     @Override
     public void add(Movie movie) {
-        Session session = sessionFactory.getCurrentSession();
-        Transaction transaction = session.beginTransaction();
-        session.save(movie);
-        transaction.commit();
+        entityManager.merge(movie);
     }
 
     @Override
     public Movie findById(Integer id) {
-        Session session = sessionFactory.getCurrentSession();
-        Transaction transaction = session.beginTransaction();
-        Movie result = sessionFactory.getCurrentSession().get(Movie.class, id);
-        transaction.commit();
-        return result;
+        return entityManager.find(Movie.class, id);
     }
 
     @Override
     public List<Movie> findAll() {
-        return sessionFactory.getCurrentSession().createQuery("from movie").list();
+        return null;
     }
 
     @Override
     public void addMany(List<Movie> movies) {
-        Session session = sessionFactory.getCurrentSession();
-        Transaction transaction = session.beginTransaction();
         for (Movie movie : movies) {
-            session.save(movie);
+            entityManager.merge(movie);
         }
-        transaction.commit();
     }
 }

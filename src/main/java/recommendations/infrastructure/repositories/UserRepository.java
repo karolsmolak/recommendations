@@ -6,62 +6,51 @@ import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import recommendations.core.domain.User;
 import recommendations.core.repositories.IUserRepository;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.util.List;
 
 @Repository
 @Primary
+@Transactional
 public class UserRepository implements IUserRepository{
-    @Autowired
-    private SessionFactory sessionFactory;
+    @PersistenceContext
+    private EntityManager entityManager;
 
     @Override
     public void add(User user) {
-        Session session = sessionFactory.getCurrentSession();
-        Transaction transaction = session.beginTransaction();
-        session.save(user);
-        transaction.commit();
+        entityManager.persist(user);
     }
 
     @Override
     public void addMany(List<User> users) {
-        Session session = sessionFactory.getCurrentSession();
-        Transaction transaction = session.beginTransaction();
         for (User user : users) {
-            session.save(user);
+            entityManager.persist(user);
         }
-        transaction.commit();
     }
 
     @Override
     public void update(User user) {
-        Session session = sessionFactory.getCurrentSession();
-        session.update(user);
     }
 
     @Override
     public void remove(Integer id) {
-        Session session = sessionFactory.getCurrentSession();
-        User user = session.load(User.class, id);
-        if (user != null) {
-            session.delete(user);
-        }
+        User user = entityManager.find(User.class, id);
+        entityManager.remove(user);
     }
 
     @Override
     public User findById(Integer id) {
-        return null;
+        return entityManager.find(User.class, id);
     }
 
     @Override
     public User findByUsername(String username) {
-        Session session = sessionFactory.getCurrentSession();
-        Transaction transaction = session.beginTransaction();
-        User user = (User)session.createQuery("from User where username = :username").setParameter("username", username).uniqueResult();
-        transaction.commit();
-        return user;
+        return null;
     }
 
     @Override
