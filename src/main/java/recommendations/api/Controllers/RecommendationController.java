@@ -23,7 +23,7 @@ public class RecommendationController {
         return _recommendationService.getUserRecommendations(username);
     }
 
-    @Scheduled(fixedRate = 100000)
+    @Scheduled(fixedRate = 300000)
     public void recalculate(){
         _recommendationService.recalculateRecommendations();
     }

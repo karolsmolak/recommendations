@@ -10,7 +10,7 @@ import java.util.List;
 @Repository
 public class InMemoryMovieRepository implements IMovieRepository {
 
-    List<Movie> movieList = new LinkedList<>();
+    private List<Movie> movieList = new LinkedList<>();
 
     public InMemoryMovieRepository() {
         add(new Movie(1, "movie1", "Comedy", 40));

@@ -14,12 +14,8 @@ import recommendations.infrastructure.services.IUserService;
 @RequestMapping("/login")
 public class LoginController {
 
-    private IUserService _userService;
-
     @Autowired
-    public LoginController(IUserService userService){
-        _userService = userService;
-    }
+    private IUserService _userService;
 
     @PostMapping
     public ResponseEntity<?> post(@RequestBody Login login) {

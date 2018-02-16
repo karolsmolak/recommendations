@@ -6,6 +6,7 @@ import org.apache.commons.csv.CSVRecord;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import recommendations.core.domain.Movie;
 import recommendations.core.domain.User;
 import recommendations.core.repositories.IMovieRepository;
@@ -19,22 +20,23 @@ import java.util.List;
 @Component
 public class UserPopulator {
 
-    @Autowired
-    private Logger logger;
-
     private IUserRepository _userRepository;
 
     private IMovieRepository _movieRepository;
 
+    @Autowired
+    private Logger logger;
+
+    @Autowired
     private IEncrypter _encrypter;
 
     @Autowired
-    public UserPopulator(IUserRepository userRepository, IMovieRepository movieRepository, IEncrypter encrypter) {
+    public UserPopulator(IUserRepository userRepository, IMovieRepository movieRepository) {
         _userRepository = userRepository;
         _movieRepository = movieRepository;
-        _encrypter = encrypter;
     }
 
+    @Transactional
     public void populate() throws Exception {
         logger.info("started user population");
 

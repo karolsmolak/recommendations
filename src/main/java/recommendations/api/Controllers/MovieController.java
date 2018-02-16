@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import recommendations.infrastructure.cqrs.commands.MovieFilter;
 import recommendations.infrastructure.dto.MovieDto;
 import recommendations.infrastructure.services.IMovieService;
 
@@ -17,8 +16,8 @@ public class MovieController {
     @Autowired
     IMovieService _movieService;
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public ResponseEntity<MovieDto> get(@PathVariable Integer id) throws Exception {
+    @GetMapping(value = "/{id}")
+    public ResponseEntity<MovieDto> get(@PathVariable Integer id) {
         MovieDto result = _movieService.get(id);
 
         if(result == null){
@@ -29,8 +28,13 @@ public class MovieController {
     }
 
     @GetMapping
-    public List<MovieDto> getFiltered(@RequestBody MovieFilter filter) {
-        return null;
+    public List<MovieDto> get() {
+        return _movieService.getAll();
+    }
+
+    @GetMapping(value = "/find/{title}")
+    public List<MovieDto> find(@PathVariable String title) {
+        return _movieService.findMoviesWithSimilarTitle(title);
     }
 
 }

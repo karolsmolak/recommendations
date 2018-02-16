@@ -17,7 +17,7 @@ public class CommandDispatcher implements ICommandDispatcher {
     private HandlersProvider _handlersProvider;
 
     @Override
-    public ResponseEntity<?> dispatch(ICommand command) throws Exception {
+    public ResponseEntity<?> dispatch(ICommand command) {
         CommandHandler<ICommand> handler = _handlersProvider.getHandler(command);
 
         return handler.handle(command);

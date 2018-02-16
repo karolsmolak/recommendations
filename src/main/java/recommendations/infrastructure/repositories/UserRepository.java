@@ -1,40 +1,31 @@
 package recommendations.infrastructure.repositories;
 
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 import recommendations.core.domain.User;
 import recommendations.core.repositories.IUserRepository;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import java.util.List;
 
 @Repository
 @Primary
-@Transactional
 public class UserRepository implements IUserRepository{
     @PersistenceContext
     private EntityManager entityManager;
 
     @Override
     public void add(User user) {
-        entityManager.persist(user);
+        entityManager.merge(user);
     }
 
     @Override
     public void addMany(List<User> users) {
         for (User user : users) {
-            entityManager.persist(user);
+            entityManager.merge(user);
         }
-    }
-
-    @Override
-    public void update(User user) {
     }
 
     @Override
@@ -50,16 +41,26 @@ public class UserRepository implements IUserRepository{
 
     @Override
     public User findByUsername(String username) {
-        return null;
+        try {
+            return (User) entityManager.createQuery("from User where username = :username")
+                    .setParameter("username", username).getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
     }
 
     @Override
     public List<User> findAll() {
-        return null;
+        return (List<User>)entityManager.createQuery("from User").getResultList();
     }
 
     @Override
     public User findByEmail(String email) {
-        return null;
+        try {
+            return (User) entityManager.createQuery("from User where email = :email")
+                    .setParameter("email", email).getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
     }
 }

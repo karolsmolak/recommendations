@@ -1,8 +1,13 @@
 package recommendations.infrastructure.services;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.transaction.annotation.Transactional;
+import recommendations.core.domain.Movie;
+import recommendations.core.domain.Rating;
 import recommendations.core.domain.User;
 import recommendations.core.repositories.IUserRepository;
+import recommendations.infrastructure.cqrs.commands.UpdateRating;
 import recommendations.infrastructure.dto.UserDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,19 +17,26 @@ import recommendations.infrastructure.exceptions.UserAlreadyExistsException;
 import java.util.List;
 
 @Service
+@Transactional
 public class UserService implements IUserService {
 
     private IUserRepository _userRepository;
 
+    @Value("${numberOfFeatures}")
+    private int numberOfFeatures;
+
+    @Autowired
     private ModelMapper _modelMapper;
 
+    @Autowired
     private IEncrypter _encrypter;
 
     @Autowired
-    public UserService(IUserRepository userRepository, ModelMapper modelMapper, IEncrypter encrypter){
+    private IMovieService _movieService;
+
+    @Autowired
+    public UserService(IUserRepository userRepository){
         this._userRepository = userRepository;
-        this._modelMapper = modelMapper;
-        this._encrypter = encrypter;
     }
 
     @Override
@@ -58,7 +70,7 @@ public class UserService implements IUserService {
         String salt = _encrypter.getSalt();
         password = _encrypter.GetHash(password, salt);
 
-        user = new User(email, username, password, salt,40);
+        user = new User(email, username, password, salt, numberOfFeatures);
         _userRepository.add(user);
     }
 
@@ -78,4 +90,24 @@ public class UserService implements IUserService {
 
     }
 
+    @Override
+    public List<Movie> getUnseenMovies(User user) {
+        List<Movie> allMovies = _movieService.getAllDetails();
+        for (Rating seenMovie : user.getUserRatings()) {
+            allMovies.remove(seenMovie.getMovie());
+        }
+        return allMovies;
+    }
+
+    @Override
+    public void updateUserRating(UpdateRating command) throws Exception {
+        User user = getByUsernameDetails(command.getUsername());
+        Movie movie = _movieService.getDetails(command.getMovieId());
+
+        if (movie == null) {
+            throw new Exception();
+        }
+
+        user.updateRating(movie, command.getNewRating()) ;
+    }
 }

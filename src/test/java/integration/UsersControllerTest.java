@@ -16,7 +16,7 @@ public class UsersControllerTest extends ControllerTestBase {
     UsersController controller;
 
     @Test
-    public void contextLoads() throws Exception {
+    public void contextLoads() {
         assertThat(controller).isNotNull();
     }
 

@@ -6,6 +6,7 @@ import org.apache.commons.csv.CSVRecord;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import recommendations.core.domain.Movie;
 import recommendations.core.repositories.IMovieRepository;
 
@@ -26,6 +27,7 @@ public class MoviePopulator {
         _movieRepository = movieRepository;
     }
 
+    @Transactional
     public void populate() throws Exception {
         logger.info("started movie population");
 

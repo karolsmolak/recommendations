@@ -24,12 +24,13 @@ import static org.junit.Assert.assertNotNull;
 @ActiveProfiles("test")
 public class UserServiceTest {
 
-    IUserService userService;
+    private IUserService userService;
 
     @Autowired
     ModelMapper modelMapper;
 
     @Mock
+    private
     IUserRepository mockRepository;
 
     @Autowired
@@ -40,7 +41,7 @@ public class UserServiceTest {
 
     @Test
     public void registeringUserShouldInvokeAddOnRepository(){
-        userService = new UserService(mockRepository, modelMapper, _encrypter);
+        userService = new UserService(mockRepository);
 
         try{
             userService.register("user@mail", "username", "secret");
@@ -53,7 +54,7 @@ public class UserServiceTest {
 
     @Test
     public void registeringExistingUserShouldThrowException() {
-        userService = new UserService(userRepository, modelMapper, _encrypter);
+        userService = new UserService(userRepository);
 
         try{
             userService.register("user1@mail.com", "user1", "secret");
@@ -68,7 +69,7 @@ public class UserServiceTest {
 
     @Test
     public void getOnExistingUserShouldNotBeNull(){
-        userService = new UserService(userRepository, modelMapper, _encrypter);
+        userService = new UserService(userRepository);
 
         assertNotNull(userService.getByUsername("user1"));
     }

@@ -8,6 +8,5 @@ public interface IMovieRepository {
     void add(Movie movie);
     Movie findById(Integer id);
     List<Movie> findAll();
-
     void addMany(List<Movie> movies);
 }

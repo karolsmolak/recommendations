@@ -1,9 +1,11 @@
 package recommendations.infrastructure.services;
 
+import org.apache.log4j.Logger;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import recommendations.core.domain.Movie;
 import recommendations.core.domain.Rating;
 import recommendations.core.domain.User;
@@ -16,6 +18,7 @@ import java.util.List;
 import static java.lang.Double.min;
 
 @Service
+@Transactional
 public class RecommendationService implements IRecommendationService {
 
     @Value("${numberOfFeatures}")
@@ -36,13 +39,18 @@ public class RecommendationService implements IRecommendationService {
     @Autowired
     private ModelMapper _modelMapper;
 
+    @Autowired
+    private Logger logger;
+
     @Override
     public void recalculateRecommendations() {
+
+        logger.info("recalculating recommendations...");
 
         List<User> users = _userService.getAllWithRatings();
 
         for (int i = 0 ; i < numberOfIterations ; i++) {
-            for (int feature = 0 ; feature < numberOfFeatures ; feature++){
+            for (int feature = 0 ; feature < numberOfFeatures ; feature++) {
                 for (User user : users) {
                     for (Rating rating : user.getUserRatings()) {
                         train(user, rating.getMovie(), rating.getRating(), feature);
@@ -51,10 +59,7 @@ public class RecommendationService implements IRecommendationService {
             }
         }
 
-        for (User user : users) {
-
-        }
-
+        logger.info("recommendations recalculated");
     }
 
     private void train(User user, Movie movie, double rating, int feature) {
@@ -84,7 +89,7 @@ public class RecommendationService implements IRecommendationService {
         List<Rating> topTen = new ArrayList<>();
 
         for (Movie movie : movies) {
-            int predictedRating = (int) predictRating(user, movie);
+            int predictedRating = (int)predictRating(user, movie);
 
             int higherRanked = 0;
             for (Rating rating : topTen) {

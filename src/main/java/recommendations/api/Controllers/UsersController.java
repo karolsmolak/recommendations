@@ -23,18 +23,18 @@ public class UsersController {
     @Autowired
     private IUserService _userService;
 
-    @RequestMapping(value = "/{username}", method = RequestMethod.GET)
-    public ResponseEntity<UserDto> get(@PathVariable String username){
+    @GetMapping(value = "/{username}")
+    public ResponseEntity<UserDto> get(@PathVariable String username) {
         UserDto result = _userService.getByUsername(username);
 
-        if(result == null){
+        if (result == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
 
         return ResponseEntity.ok().body(result);
     }
 
-    @PostMapping
+    @PostMapping(value = "/register")
     public ResponseEntity<?> post(@Valid @RequestBody CreateUser createUser, BindingResult bindingResult) throws Exception {
         if (bindingResult.hasErrors()) {
            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
@@ -43,8 +43,14 @@ public class UsersController {
         return _commandDispatcher.dispatch(createUser);
     }
 
-    @RequestMapping(value = "/rate", method = RequestMethod.POST)
-    public ResponseEntity<?> rate(@PathVariable String username, UpdateRating updateRating) {
-        return ResponseEntity.ok().body(null);
+    @PostMapping(value = "/{username}")
+    public ResponseEntity<?> rate(@PathVariable String username, @Valid @RequestBody UpdateRating updateRating,
+                                  BindingResult bindingResult) throws  Exception{
+        if (bindingResult.hasErrors()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+
+        return _commandDispatcher.dispatch(updateRating);
     }
+
 }

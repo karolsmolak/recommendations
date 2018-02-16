@@ -27,10 +27,6 @@ public class InMemoryUserRepository implements IUserRepository {
         users.add(user);
     }
 
-    @Override
-    public void update(User user) {
-
-    }
 
     @Override
     public void remove(Integer id) {

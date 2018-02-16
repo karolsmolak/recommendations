@@ -9,8 +9,8 @@ import java.util.concurrent.ThreadLocalRandom;
 public class Movie {
 
     @Id
-    @GeneratedValue(generator="myGenerator")
-    @GenericGenerator(name="myGenerator", strategy="recommendations.config.FilterIdentifierGenerator")
+    @GeneratedValue(generator="myGenerator", strategy = GenerationType.IDENTITY)
+    @GenericGenerator(name="myGenerator", strategy="recommendations.config.UseExistingOrGenerateIdGenerator")
     @Column(unique=true, nullable=false)
     private Integer id;
 
@@ -29,6 +29,7 @@ public class Movie {
         this.genre = genre;
 
         features = new double[numberOfFeatures];
+
         for (int i = 0 ; i < numberOfFeatures ; i++) {
             features[i] =  (ThreadLocalRandom.current().nextDouble(0, 1));
         }

@@ -20,7 +20,6 @@ public class EncrypterTest {
 
     @Test
     public void consistencyCheck() throws Exception {
-
         assertEquals(_encrypter.GetHash("abcd", "adad"), _encrypter.GetHash("abcd", "adad"));
     }
 

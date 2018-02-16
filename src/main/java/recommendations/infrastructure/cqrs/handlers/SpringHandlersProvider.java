@@ -20,7 +20,7 @@ public class SpringHandlersProvider implements CommandDispatcher.HandlersProvide
     @Autowired
     private ConfigurableListableBeanFactory beanFactory;
 
-    private Map<Class<?>, String> handlers = new HashMap<Class<?>, String>();
+    private Map<Class<?>, String> handlers = new HashMap<>();
 
     @SuppressWarnings("unchecked")
     @Override

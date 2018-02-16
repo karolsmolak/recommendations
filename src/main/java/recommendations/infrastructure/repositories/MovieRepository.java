@@ -1,12 +1,7 @@
 package recommendations.infrastructure.repositories;
 
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 import recommendations.core.domain.Movie;
 import recommendations.core.repositories.IMovieRepository;
 
@@ -16,7 +11,6 @@ import java.util.List;
 
 @Repository
 @Primary
-@Transactional
 public class MovieRepository implements IMovieRepository {
     @PersistenceContext
     private EntityManager entityManager;
@@ -33,7 +27,7 @@ public class MovieRepository implements IMovieRepository {
 
     @Override
     public List<Movie> findAll() {
-        return null;
+        return (List<Movie>)entityManager.createQuery("from Movie").getResultList();
     }
 
     @Override

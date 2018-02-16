@@ -3,15 +3,17 @@ package recommendations.core.domain;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import java.util.*;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.Collectors;
 
 @Entity
 public class User {
 
     @Id
     @GeneratedValue(generator="myGenerator")
-    @GenericGenerator(name="myGenerator", strategy="recommendations.config.FilterIdentifierGenerator")
+    @GenericGenerator(name="myGenerator", strategy="recommendations.config.UseExistingOrGenerateIdGenerator")
     @Column(unique=true, nullable=false)
     private Integer id;
 
@@ -55,7 +57,12 @@ public class User {
     }
 
     public void updateRating(Movie movie, Integer rating) {
-        userRatings.add(new Rating(movie, rating));
+        userRatings = userRatings.stream().filter((Rating r) -> !r.getMovie().equals(movie))
+                .collect(Collectors.toList());
+
+        if (rating != null) {
+            userRatings.add(new Rating(movie, rating));
+        }
     }
 
     public String getEmail() {
