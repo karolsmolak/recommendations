@@ -12,7 +12,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import recommendations.core.repositories.IUserRepository;
-import recommendations.infrastructure.encrypter.IEncrypter;
 import recommendations.infrastructure.services.IUserService;
 import recommendations.infrastructure.services.UserService;
 
@@ -27,17 +26,13 @@ public class UserServiceTest {
     private IUserService userService;
 
     @Autowired
-    ModelMapper modelMapper;
+    private ModelMapper modelMapper;
 
     @Mock
-    private
-    IUserRepository mockRepository;
+    private IUserRepository mockRepository;
 
     @Autowired
-    IUserRepository userRepository;
-
-    @Autowired
-    IEncrypter _encrypter;
+    private IUserRepository userRepository;
 
     @Test
     public void registeringUserShouldInvokeAddOnRepository(){

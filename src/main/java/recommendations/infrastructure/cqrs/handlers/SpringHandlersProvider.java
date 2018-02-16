@@ -29,8 +29,7 @@ public class SpringHandlersProvider implements CommandDispatcher.HandlersProvide
         if (beanName == null) {
             throw new RuntimeException("command handler not found. Command class is " + command.getClass());
         }
-        CommandHandler<ICommand> handler = beanFactory.getBean(beanName, CommandHandler.class);
-        return handler;
+        return beanFactory.getBean(beanName, CommandHandler.class);
     }
 
     @Override

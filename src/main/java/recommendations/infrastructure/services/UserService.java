@@ -1,7 +1,13 @@
 package recommendations.infrastructure.services;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import recommendations.core.domain.Movie;
 import recommendations.core.domain.Rating;
@@ -9,16 +15,14 @@ import recommendations.core.domain.User;
 import recommendations.core.repositories.IUserRepository;
 import recommendations.infrastructure.cqrs.commands.UpdateRating;
 import recommendations.infrastructure.dto.UserDto;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import recommendations.infrastructure.encrypter.IEncrypter;
 import recommendations.infrastructure.exceptions.UserAlreadyExistsException;
 
+import java.util.Collections;
 import java.util.List;
 
 @Service
 @Transactional
-public class UserService implements IUserService {
+public class UserService implements IUserService, UserDetailsService {
 
     private IUserRepository _userRepository;
 
@@ -29,7 +33,7 @@ public class UserService implements IUserService {
     private ModelMapper _modelMapper;
 
     @Autowired
-    private IEncrypter _encrypter;
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Autowired
     private IMovieService _movieService;
@@ -55,6 +59,15 @@ public class UserService implements IUserService {
         return _modelMapper.map(user, UserDto.class);
     }
 
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        User user = getByUsernameDetails(username);
+        if (user == null) {
+            throw new UsernameNotFoundException(username);
+        }
+        return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), Collections.emptyList());
+    }
+
     public User getByUsernameDetails(String username) {
         return _userRepository.findByUsername(username);
     }
@@ -67,27 +80,10 @@ public class UserService implements IUserService {
             throw new UserAlreadyExistsException(email);
         }
 
-        String salt = _encrypter.getSalt();
-        password = _encrypter.GetHash(password, salt);
+        password = bCryptPasswordEncoder.encode(password);
 
-        user = new User(email, username, password, salt, numberOfFeatures);
+        user = new User(email, username, password, numberOfFeatures);
         _userRepository.add(user);
-    }
-
-    @Override
-    public void login(String username, String password) throws Exception {
-        User user = getByUsernameDetails(username);
-
-        if (user == null) {
-            throw new Exception("Invalid credentials");
-        }
-
-        String hash = _encrypter.GetHash(password, user.getSalt());
-
-        if (!user.getPassword().equals(hash)) {
-            throw new Exception("Invalid credentials");
-        }
-
     }
 
     @Override

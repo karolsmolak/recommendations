@@ -3,8 +3,6 @@ package recommendations.infrastructure.repositories;
 import org.springframework.stereotype.Repository;
 import recommendations.core.domain.User;
 import recommendations.core.repositories.IUserRepository;
-import recommendations.infrastructure.encrypter.Encrypter;
-
 import java.util.LinkedList;
 import java.util.List;
 
@@ -16,7 +14,7 @@ public class InMemoryUserRepository implements IUserRepository {
     public InMemoryUserRepository() {
         users = new LinkedList<>();
         try {
-            add(new User("user1@mail.com", "user1", new Encrypter().GetHash("user1", "salt"), "salt", 40));
+            add(new User("user1@mail.com", "user1", "aSD", 40));
         } catch (Exception e) {
             e.printStackTrace();
         }

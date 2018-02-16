@@ -20,7 +20,6 @@ public class User {
     private String email;
     private String username;
     private String password;
-    private String salt;
 
     @Column(length = 20923)
     private double[] features;
@@ -30,8 +29,7 @@ public class User {
 
     public User() {}
 
-    public User(Integer id, String email, String username, String password, String salt, int numberOfFeatures) {
-        this.salt = salt;
+    public User(Integer id, String email, String username, String password, int numberOfFeatures) {
         this.email = email;
         this.username = username;
         this.password = password;
@@ -44,8 +42,7 @@ public class User {
     }
 
 
-    public User(String email, String username, String password, String salt, int numberOfFeatures) {
-        this.salt = salt;
+    public User(String email, String username, String password, int numberOfFeatures) {
         this.email = email;
         this.username = username;
         this.password = password;
@@ -91,9 +88,5 @@ public class User {
 
     public void setFeature(int index, double value) {
         this.features[index] = value;
-    }
-
-    public String getSalt() {
-        return salt;
     }
 }

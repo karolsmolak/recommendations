@@ -13,7 +13,6 @@ public interface IUserService {
     UserDto getByUsername(String username);
     List<User> getAllWithRatings();
     User getByUsernameDetails(String username);
-    void login(String username, String password) throws Exception;
 
     List<Movie> getUnseenMovies(User user);
 
