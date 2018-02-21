@@ -1,12 +1,7 @@
 package recommendations.core.repositories;
 
+import org.springframework.data.jpa.repository.JpaRepository;
 import recommendations.core.domain.Movie;
 
-import java.util.List;
-
-public interface IMovieRepository {
-    void add(Movie movie);
-    Movie findById(Integer id);
-    List<Movie> findAll();
-    void addMany(List<Movie> movies);
+public interface IMovieRepository extends JpaRepository<Movie, Integer> {
 }

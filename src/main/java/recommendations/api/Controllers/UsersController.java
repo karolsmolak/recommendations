@@ -16,7 +16,6 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping("/users")
 public class UsersController {
-
     @Autowired
     private ICommandDispatcher _commandDispatcher;
 
@@ -26,11 +25,9 @@ public class UsersController {
     @GetMapping(value = "/{username}")
     public ResponseEntity<UserDto> get(@PathVariable String username) {
         UserDto result = _userService.getByUsername(username);
-
         if (result == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
-
         return ResponseEntity.ok().body(result);
     }
 
@@ -39,7 +36,6 @@ public class UsersController {
         if (bindingResult.hasErrors()) {
            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
-
         return _commandDispatcher.dispatch(createUser);
     }
 
@@ -49,8 +45,6 @@ public class UsersController {
         if (bindingResult.hasErrors()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
-
         return _commandDispatcher.dispatch(updateRating);
     }
-
 }

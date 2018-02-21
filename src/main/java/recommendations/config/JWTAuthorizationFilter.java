@@ -19,7 +19,6 @@ import static recommendations.config.SecurityConstants.TOKEN_PREFIX;
 
 
 public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
-
     public JWTAuthorizationFilter(AuthenticationManager authManager) {
         super(authManager);
     }

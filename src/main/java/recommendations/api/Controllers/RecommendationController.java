@@ -14,7 +14,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/recommendations")
 public class RecommendationController {
-
     @Autowired
     private IRecommendationService _recommendationService;
 
@@ -23,9 +22,8 @@ public class RecommendationController {
         return _recommendationService.getUserRecommendations(username);
     }
 
-    @Scheduled(fixedRate = 300000)
-    public void recalculate(){
+    @Scheduled(fixedRateString = "${recalculationFrequencyInMilliseconds}")
+    private void recalculate(){
         _recommendationService.recalculateRecommendations();
     }
-
 }

@@ -14,18 +14,12 @@ import recommendations.core.repositories.IMovieRepository;
 import recommendations.core.repositories.IUserRepository;
 
 import java.io.FileReader;
-import java.util.LinkedList;
-import java.util.List;
 
 @Component
 public class UserPopulator {
-
     private IUserRepository _userRepository;
-
     private IMovieRepository _movieRepository;
-
-    @Autowired
-    private Logger logger;
+    private final Logger logger = Logger.getLogger(this.getClass());
 
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
@@ -39,43 +33,31 @@ public class UserPopulator {
     @Transactional
     public void populate() throws Exception {
         logger.info("started user population");
-
         CSVParser parser = new CSVParser(new FileReader("src/main/resources/ratings.csv"), CSVFormat.EXCEL.withHeader());
-
-        List<User> bufor = new LinkedList<>();
-
         User currentUser = null;
-        for (CSVRecord record : parser) {
 
-            Movie movie = _movieRepository.findById(Integer.valueOf(record.get("movieId")));
+        for (CSVRecord record : parser) {
+            Movie movie = _movieRepository.findOne(Integer.valueOf(record.get("movieId")));
+            String userId = record.get("userId");
 
             if (currentUser != null) {
-                if(!currentUser.getUsername().equals(record.get("userId"))) {
-                    bufor.add(currentUser);
+                if(!currentUser.getUsername().equals(userId)) {
+                    _userRepository.save(currentUser);
                     currentUser = null;
                 }
             }
 
             if (currentUser == null) {
-
-                String pass = "supersecretpassword" + record.get("userId");
-
-                currentUser = new User(Integer.valueOf(record.get("userId")),
-                        "user" + record.get("userId") + "@mail", record.get("userId"),
-                        bCryptPasswordEncoder.encode("secretuser"), 40);
+                String password = "supersecretpassword" + userId;
+                password = bCryptPasswordEncoder.encode(password);
+                currentUser = new User("user" + userId + "@mail", userId, password, 40)
+                        .withCustomId(Integer.valueOf(userId));
             }
 
-            currentUser.updateRating(movie,
-                    (int)Math.round(Double.parseDouble(record.get("rating")) * 2));
+            currentUser.updateRating(movie, (int)Math.round(Double.parseDouble(record.get("rating")) * 2));
         }
 
         parser.close();
-
-        logger.info("finished reading user data from file");
-        logger.info("started inserting users into repository");
-
-        _userRepository.addMany(bufor);
-
         logger.info("finished user population");
     }
 

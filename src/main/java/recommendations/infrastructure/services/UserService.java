@@ -23,9 +23,6 @@ import java.util.List;
 @Service
 @Transactional
 public class UserService implements IUserService, UserDetailsService {
-
-    private IUserRepository _userRepository;
-
     @Value("${numberOfFeatures}")
     private int numberOfFeatures;
 
@@ -37,6 +34,8 @@ public class UserService implements IUserService, UserDetailsService {
 
     @Autowired
     private IMovieService _movieService;
+
+    private IUserRepository _userRepository;
 
     @Autowired
     public UserService(IUserRepository userRepository){
@@ -51,11 +50,9 @@ public class UserService implements IUserService, UserDetailsService {
     @Override
     public UserDto getByUsername(String username) {
         User user = _userRepository.findByUsername(username);
-
         if(user == null){
             return null;
         }
-
         return _modelMapper.map(user, UserDto.class);
     }
 
@@ -75,15 +72,14 @@ public class UserService implements IUserService, UserDetailsService {
     @Override
     public void register(String email, String username, String password) throws Exception {
         User user = _userRepository.findByEmail(email);
-
         if(user != null){
             throw new UserAlreadyExistsException(email);
         }
-
-        password = bCryptPasswordEncoder.encode(password);
-
-        user = new User(email, username, password, numberOfFeatures);
-        _userRepository.add(user);
+        user = _userRepository.findByUsername(username);
+        if(user != null){
+            throw new UserAlreadyExistsException(username);
+        }
+        _userRepository.save(new User(email, username, bCryptPasswordEncoder.encode(password), numberOfFeatures));
     }
 
     @Override
@@ -99,11 +95,9 @@ public class UserService implements IUserService, UserDetailsService {
     public void updateUserRating(UpdateRating command) throws Exception {
         User user = getByUsernameDetails(command.getUsername());
         Movie movie = _movieService.getDetails(command.getMovieId());
-
         if (movie == null) {
             throw new Exception();
         }
-
-        user.updateRating(movie, command.getNewRating()) ;
+        user.updateRating(movie, command.getNewRating());
     }
 }

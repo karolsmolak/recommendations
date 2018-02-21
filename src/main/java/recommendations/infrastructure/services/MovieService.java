@@ -8,17 +8,16 @@ import recommendations.core.domain.Movie;
 import recommendations.core.repositories.IMovieRepository;
 import recommendations.infrastructure.dto.MovieDto;
 
-import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
 public class MovieService implements IMovieService {
-
-    private IMovieRepository _movieRepository;
-
     @Autowired
     private ModelMapper _modelMapper;
+
+    private IMovieRepository _movieRepository;
 
     @Autowired
     public MovieService(IMovieRepository movieRepository) {
@@ -27,19 +26,16 @@ public class MovieService implements IMovieService {
 
     @Override
     public MovieDto get(Integer id) {
-        Movie movie = _movieRepository.findById(id);
-
+        Movie movie = _movieRepository.findOne(id);
         if (movie == null) {
             return null;
         }
-
         return _modelMapper.map(movie, MovieDto.class);
-
     }
 
     @Override
     public Movie getDetails(Integer id) {
-        return _movieRepository.findById(id);
+        return _movieRepository.findOne(id);
     }
 
     @Override
@@ -54,11 +50,6 @@ public class MovieService implements IMovieService {
 
     @Override
     public List<MovieDto> getAll() {
-        List<Movie> movies = getAllDetails();
-        List<MovieDto> result = new LinkedList<>();
-        for (Movie movie : movies) {
-            result.add(_modelMapper.map(movie, MovieDto.class));
-        }
-        return result;
+        return getAllDetails().stream().map((Movie movie) -> _modelMapper.map(movie, MovieDto.class)).collect(Collectors.toList());
     }
 }

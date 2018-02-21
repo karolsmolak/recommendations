@@ -12,18 +12,15 @@ import java.util.List;
 @RestController
 @RequestMapping("/movies")
 public class MovieController {
-
     @Autowired
     IMovieService _movieService;
 
     @GetMapping(value = "/{id}")
     public ResponseEntity<MovieDto> get(@PathVariable Integer id) {
         MovieDto result = _movieService.get(id);
-
         if(result == null){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
-
         return ResponseEntity.ok(result);
     }
 
@@ -36,5 +33,4 @@ public class MovieController {
     public List<MovieDto> find(@PathVariable String title) {
         return _movieService.findMoviesWithSimilarTitle(title);
     }
-
 }

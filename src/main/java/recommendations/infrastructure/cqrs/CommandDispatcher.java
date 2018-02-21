@@ -8,7 +8,6 @@ import recommendations.infrastructure.cqrs.handlers.CommandHandler;
 
 @Component
 public class CommandDispatcher implements ICommandDispatcher {
-
     public interface HandlersProvider{
         CommandHandler<ICommand> getHandler(ICommand command);
     }
@@ -19,7 +18,6 @@ public class CommandDispatcher implements ICommandDispatcher {
     @Override
     public ResponseEntity<?> dispatch(ICommand command) {
         CommandHandler<ICommand> handler = _handlersProvider.getHandler(command);
-
         return handler.handle(command);
     }
 }

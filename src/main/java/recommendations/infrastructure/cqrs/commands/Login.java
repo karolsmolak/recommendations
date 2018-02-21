@@ -4,6 +4,7 @@ import recommendations.infrastructure.cqrs.commands.ICommand;
 
 public class Login implements ICommand {
     private String username;
+
     private String password;
 
     public Login(){}

@@ -10,11 +10,12 @@ import recommendations.infrastructure.utils.UserPopulator;
 @SpringBootApplication
 @ComponentScan("recommendations")
 public class Application {
-
     public static void main(String[] args) throws Exception {
         ApplicationContext context = SpringApplication.run(Application.class, args);
-        //context.getBean(MoviePopulator.class).populate();
-        //context.getBean(UserPopulator.class).populate();
-    }
 
+        if (context.getEnvironment().getProperty("populate").equals("true")) {
+            context.getBean(MoviePopulator.class).populate();
+            context.getBean(UserPopulator.class).populate();
+        }
+    }
 }

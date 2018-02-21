@@ -29,19 +29,6 @@ public class User {
 
     public User() {}
 
-    public User(Integer id, String email, String username, String password, int numberOfFeatures) {
-        this.email = email;
-        this.username = username;
-        this.password = password;
-        this.id = id;
-
-        features = new double[numberOfFeatures];
-        for (int i = 0 ; i < numberOfFeatures ; i++) {
-            features[i] = (ThreadLocalRandom.current().nextDouble(0, 1));
-        }
-    }
-
-
     public User(String email, String username, String password, int numberOfFeatures) {
         this.email = email;
         this.username = username;
@@ -88,5 +75,10 @@ public class User {
 
     public void setFeature(int index, double value) {
         this.features[index] = value;
+    }
+
+    public User withCustomId(Integer id) {
+        this.id = id;
+        return this;
     }
 }

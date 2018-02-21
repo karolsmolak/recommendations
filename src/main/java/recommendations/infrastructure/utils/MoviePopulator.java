@@ -11,14 +11,10 @@ import recommendations.core.domain.Movie;
 import recommendations.core.repositories.IMovieRepository;
 
 import java.io.FileReader;
-import java.util.LinkedList;
-import java.util.List;
 
 @Component
 public class MoviePopulator {
-
-    @Autowired
-    private Logger logger;
+    private final Logger logger = Logger.getLogger(this.getClass());
 
     private IMovieRepository _movieRepository;
 
@@ -33,20 +29,11 @@ public class MoviePopulator {
 
         CSVParser parser = new CSVParser(new FileReader("src/main/resources/movies.csv"), CSVFormat.EXCEL.withHeader());
 
-        List<Movie> bufor = new LinkedList<>();
-
         for (CSVRecord record : parser) {
-            bufor.add(new Movie(Integer.parseInt(record.get("movieId")), record.get("title"), record.get("genres"), 40));
+            _movieRepository.save(new Movie(Integer.parseInt(record.get("movieId")), record.get("title"), record.get("genres"), 40));
         }
 
         parser.close();
-
-        logger.info("finished reading movie data from file");
-        logger.info("started inserting movies into repository");
-
-        _movieRepository.addMany(bufor);
-
         logger.info("finished movie population");
     }
-
 }

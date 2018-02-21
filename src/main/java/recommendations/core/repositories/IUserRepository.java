@@ -1,15 +1,9 @@
 package recommendations.core.repositories;
 
+import org.springframework.data.jpa.repository.JpaRepository;
 import recommendations.core.domain.User;
 
-import java.util.List;
-
-public interface IUserRepository {
-    void add(User user);
-    void remove(Integer id);
-    User findById(Integer id);
+public interface IUserRepository extends JpaRepository<User, Integer> {
     User findByUsername(String username);
-    List<User> findAll();
     User findByEmail(String email);
-    void addMany(List<User> bufor);
 }

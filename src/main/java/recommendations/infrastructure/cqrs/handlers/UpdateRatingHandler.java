@@ -12,7 +12,6 @@ import java.net.URI;
 
 @Component
 public class UpdateRatingHandler implements CommandHandler<UpdateRating> {
-
     @Autowired
     IUserService _userService;
 
