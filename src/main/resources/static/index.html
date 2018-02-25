@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en" >
+
+<head>
+    <meta charset="UTF-8">
+    <title>Sign-Up/Login Form</title>
+    <link href='https://fonts.googleapis.com/css?family=Titillium+Web:400,300,600' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/rateYo/2.3.2/jquery.rateyo.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/rateYo/2.3.2/jquery.rateyo.min.js"></script>
+</head>
+
+<body>
+
+<div id = "main" class = "form" style = "display: none;">
+    <img id = "logout" src="png/exit.png" class = "zoom"/>
+    <h1>Welcome back, <span id = "logged_user"></span></h1>
+    <div id = "profile">
+        <div id = "recommendations">
+            <h2>Check out some of these movies!</h2>
+            <ul id = "recommended_movies"></ul>
+        </div>
+        <div id = "search">
+            <h2>Rate some known titles.</h2>
+            <input id = "title" type = "text" placeholder = "title">
+            <ul id = "search_result"></ul>
+        </div>
+        <div id = "myratings">
+            <h2>Your ratings:</h2>
+            <ul id = "rating_list"></ul>
+        </div>
+    </div>
+</div>
+
+<div id = "form" style="display: none;" class="form">
+
+    <h1>Personalised movie recommendations</h1>
+
+    <ul class="tab-group">
+        <li class="tab active"><a href="#signup">Sign Up</a></li>
+        <li class="tab"><a href="#login">Log In</a></li>
+    </ul>
+
+    <div class="tab-content">
+        <div id="signup">
+            <h1>Sign Up for Free</h1>
+
+            <form id = "signup_form" action = "" method = "post">
+
+                <div class="field-wrap">
+                    <label>
+                        Username<span class="req">*</span>
+                    </label>
+                    <input type="text" name = "username" required autocomplete="off" />
+                </div>
+
+                <div class="field-wrap">
+                    <label>
+                        Password<span class="req">*</span>
+                    </label>
+                    <input type="password" name = "password" required autocomplete="off"/>
+                </div>
+
+                <div class="field-wrap">
+                    <label>
+                        Email Address<span class="req">*</span>
+                    </label>
+                    <input type="email" name = "email" required autocomplete="off"/>
+                </div>
+
+                <button type = "button" id = "sign_button" class="button button-block"/>Get Started</button>
+
+            </form>
+
+            <h2 id = "signup_result"></h2>
+        </div>
+
+        <div id = "login">
+            <h1>Welcome Back!</h1>
+
+            <form id = "login_form">
+
+                <div class="field-wrap">
+                    <label>
+                        Username<span class="req">*</span>
+                    </label>
+                    <input id = "username_form" type="text" name = "username" autocomplete="off"/>
+                </div>
+
+                <div class="field-wrap">
+                    <label>
+                        Password<span class="req">*</span>
+                    </label>
+                    <input type="password" name = "password" autocomplete="off"/>
+                </div>
+
+                <button type = "button" id = "login_button" class="button button-block"/>Log In</button>
+
+            </form>
+
+            <h2 id = "login_result"></h2>
+        </div>
+
+    </div>
+
+</div>
+
+<script src="js/form.js"></script>
+<script src = "js/client.js"></script>
+</body>
+
+</html>
