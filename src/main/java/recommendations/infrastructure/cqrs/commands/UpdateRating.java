@@ -1,5 +1,6 @@
 package recommendations.infrastructure.cqrs.commands;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import recommendations.infrastructure.cqrs.commands.ICommand;
 
 import javax.validation.constraints.Max;
@@ -7,7 +8,7 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 public class UpdateRating implements ICommand {
-    @NotNull
+    @JsonIgnore
     private String username;
 
     @NotNull

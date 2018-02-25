@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import recommendations.core.domain.Movie;
+import recommendations.core.domain.PredictedRating;
 import recommendations.core.domain.Rating;
 import recommendations.core.domain.User;
 import recommendations.infrastructure.dto.MovieDto;
@@ -65,12 +66,12 @@ public class RecommendationService implements IRecommendationService {
     public List<MovieDto> getUserRecommendations(String username) {
         User user = _userService.getByUsernameDetails(username);
         List<Movie> movies = _userService.getUnseenMovies(user);
-        List<Rating> topRecommendations = new ArrayList<>();
+        List<PredictedRating> topRecommendations = new ArrayList<>();
         for (Movie movie : movies) {
-            int predictedRating = (int)predictRating(user, movie);
-            addMovieToTopRecommendations(topRecommendations, movie, predictedRating);
+            PredictedRating predictedRating = new PredictedRating(movie, predictRating(user, movie));
+            addMovieToTopRecommendations(topRecommendations, predictedRating);
         }
-        return topRecommendations.stream().map((Rating rating) -> _modelMapper.map(rating.getMovie(), MovieDto.class)).collect(Collectors.toList());
+        return topRecommendations.stream().map((PredictedRating rating) -> _modelMapper.map(rating.getMovie(), MovieDto.class)).collect(Collectors.toList());
     }
 
     private void train(User user, Movie movie, double rating, int feature) {
@@ -88,19 +89,19 @@ public class RecommendationService implements IRecommendationService {
         return rating;
     }
 
-    private void addMovieToTopRecommendations(List<Rating> topRecommendations, Movie movie, int movieRating) {
-        int higherRanked = getHigherRanked(topRecommendations, movieRating);
+    private void addMovieToTopRecommendations(List<PredictedRating> topRecommendations, PredictedRating predictedRating) {
+        int higherRanked = getHigherRanked(topRecommendations, predictedRating.getRating());
         if (higherRanked < numberOfRecommendationsPresented) {
-            topRecommendations.add(higherRanked, new Rating(movie, movieRating));
+            topRecommendations.add(higherRanked, predictedRating);
         }
         if (topRecommendations.size() > numberOfRecommendationsPresented) {
             topRecommendations.remove(numberOfRecommendationsPresented);
         }
     }
 
-    private int getHigherRanked(List<Rating> ratings, int newRating) {
+    private int getHigherRanked(List<PredictedRating> ratings, double newRating) {
         int higherRanked = 0;
-        for (Rating rating : ratings) {
+        for (PredictedRating rating : ratings) {
             if (rating.getRating() >= newRating) {
                 higherRanked++;
             }

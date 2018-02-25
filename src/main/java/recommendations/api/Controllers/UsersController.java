@@ -1,5 +1,6 @@
 package recommendations.api.Controllers;
 
+import io.jsonwebtoken.Jwts;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -11,7 +12,12 @@ import recommendations.infrastructure.dto.UserDto;
 import recommendations.infrastructure.services.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+
+import static recommendations.config.SecurityConstants.HEADER_STRING;
+import static recommendations.config.SecurityConstants.SECRET;
+import static recommendations.config.SecurityConstants.TOKEN_PREFIX;
 
 @RestController
 @RequestMapping("/users")
@@ -41,10 +47,23 @@ public class UsersController {
 
     @PostMapping(value = "/{username}")
     public ResponseEntity<?> rate(@PathVariable String username, @Valid @RequestBody UpdateRating updateRating,
-                                  BindingResult bindingResult) throws  Exception{
+                                  BindingResult bindingResult, HttpServletRequest request) throws  Exception{
         if (bindingResult.hasErrors()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
+
+        String token = request.getHeader(HEADER_STRING);
+        String user = Jwts.parser()
+                .setSigningKey(SECRET.getBytes())
+                .parseClaimsJws(token.replace(TOKEN_PREFIX, ""))
+                .getBody()
+                .getSubject();
+        if (!user.equals(username)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        } else {
+            updateRating.setUsername(user);
+        }
+
         return _commandDispatcher.dispatch(updateRating);
     }
 }
