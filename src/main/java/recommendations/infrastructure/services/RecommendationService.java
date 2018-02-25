@@ -45,13 +45,18 @@ public class RecommendationService implements IRecommendationService {
         logger.info("recalculating recommendations...");
         List<User> users = _userService.getAllWithRatings();
         for (int i = 0 ; i < numberOfIterations ; i++) {
+            double sum1 = 0;
+            double sum2 = 0;
             for (int feature = 0 ; feature < numberOfFeatures ; feature++) {
                 for (User user : users) {
                     for (Rating rating : user.getUserRatings()) {
+                        sum1 += (rating.getRating() - predictRating(user, rating.getMovie())) * (rating.getRating() - predictRating(user, rating.getMovie()));
+                        sum2 += rating.getRating() * rating.getRating();
                         train(user, rating.getMovie(), rating.getRating(), feature);
                     }
                 }
             }
+            logger.info("Current stress: " + Math.sqrt(sum1 / sum2));
         }
         logger.info("recommendations recalculated");
     }

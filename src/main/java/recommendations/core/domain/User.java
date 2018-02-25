@@ -43,7 +43,6 @@ public class User {
     public void updateRating(Movie movie, Integer rating) {
         userRatings = userRatings.stream().filter((Rating r) -> !r.getMovie().equals(movie))
                 .collect(Collectors.toList());
-
         if (rating != null) {
             userRatings.add(new Rating(movie, rating));
         }

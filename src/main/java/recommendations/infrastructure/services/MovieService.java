@@ -45,7 +45,7 @@ public class MovieService implements IMovieService {
 
     @Override
     public List<MovieDto> findMoviesWithSimilarTitle(String title) {
-        return _movieRepository.findByTitleContaining(title).stream().map((Movie movie) -> _modelMapper.map(movie, MovieDto.class)).collect(Collectors.toList());
+        return _movieRepository.findByTitleIgnoreCaseStartingWithOrderByTitle(title).stream().map((Movie movie) -> _modelMapper.map(movie, MovieDto.class)).collect(Collectors.toList());
     }
 
     @Override

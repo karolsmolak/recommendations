@@ -6,5 +6,5 @@ import recommendations.core.domain.Movie;
 import java.util.List;
 
 public interface IMovieRepository extends JpaRepository<Movie, Integer> {
-    List<Movie> findByTitleContaining(String title);
+    List<Movie> findByTitleIgnoreCaseStartingWithOrderByTitle(String title);
 }
