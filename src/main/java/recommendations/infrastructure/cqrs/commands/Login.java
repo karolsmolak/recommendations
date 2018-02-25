@@ -1,7 +1,5 @@
 package recommendations.infrastructure.cqrs.commands;
 
-import recommendations.infrastructure.cqrs.commands.ICommand;
-
 public class Login implements ICommand {
     private String username;
 

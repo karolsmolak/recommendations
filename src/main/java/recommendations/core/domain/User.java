@@ -14,7 +14,7 @@ public class User {
     @Id
     @GeneratedValue(generator="myGenerator")
     @GenericGenerator(name="myGenerator", strategy="recommendations.config.UseExistingOrGenerateIdGenerator")
-    @Column(unique=true, nullable=false)
+    @Column(name = "user_id", unique=true, nullable=false)
     private Integer id;
 
     private String email;
@@ -24,7 +24,7 @@ public class User {
     @Column(length = 20923)
     private double[] features;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.LAZY)
     private List<Rating> userRatings = new LinkedList<>();
 
     public User() {}
@@ -36,15 +36,14 @@ public class User {
 
         features = new double[numberOfFeatures];
         for (int i = 0 ; i < numberOfFeatures ; i++) {
-            features[i] = (ThreadLocalRandom.current().nextDouble(0, 1));
+            features[i] = ThreadLocalRandom.current().nextDouble(0, 1);
         }
     }
 
     public void updateRating(Movie movie, Integer rating) {
-        userRatings = userRatings.stream().filter((Rating r) -> !r.getMovie().equals(movie))
-                .collect(Collectors.toList());
+        userRatings = userRatings.stream().filter((Rating r) -> !r.getMovie().equals(movie)).collect(Collectors.toList());
         if (rating != null) {
-            userRatings.add(new Rating(movie, rating));
+            userRatings.add(new Rating(this, movie, rating));
         }
     }
 

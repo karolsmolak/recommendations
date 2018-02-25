@@ -57,6 +57,7 @@ public class UserPopulator {
             currentUser.updateRating(movie, (int)Math.round(Double.parseDouble(record.get("rating")) * 2));
         }
 
+        _userRepository.save(currentUser);
         parser.close();
         logger.info("finished user population");
     }

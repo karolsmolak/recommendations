@@ -11,7 +11,7 @@ public class Movie {
     @Id
     @GeneratedValue(generator="myGenerator", strategy = GenerationType.IDENTITY)
     @GenericGenerator(name="myGenerator", strategy="recommendations.config.UseExistingOrGenerateIdGenerator")
-    @Column(unique=true, nullable=false)
+    @Column(name = "movie_id", unique=true, nullable=false)
     private Integer id;
 
     private String title;
@@ -31,7 +31,7 @@ public class Movie {
         features = new double[numberOfFeatures];
 
         for (int i = 0 ; i < numberOfFeatures ; i++) {
-            features[i] =  (ThreadLocalRandom.current().nextDouble(0, 1));
+            features[i] =  ThreadLocalRandom.current().nextDouble(0, 1);
         }
     }
 
